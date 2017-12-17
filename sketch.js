@@ -9,13 +9,13 @@ var baseURL = 'https://api.mapbox.com';
 var mapBoxVersion = 'v4';
 var mapType = 'light';
 
-var clat = 0;
-var clon = 0;
+var clat = 41.8719;
+var clon = 12.5674;
 
-var zoom = 2;
+var zoom = 6;
 
 var imgWidth = 1024;
-var imgHeight = 512;
+var imgHeight = 1024;
 
 var privateKey = 'pk.eyJ1IjoiYWRhbWFudGlubyIsImEiOiJjajI1eDIxaW0wMDY1MzNwY29oeDEzc2lmIn0.8OaNlBhGRgUZQqnxTuuYyg';
 
@@ -26,23 +26,25 @@ function preload(){
 	baseURL = "" + baseURL + '/' + mapBoxVersion +'/mapbox.' + mapType + '/' + clon + ',' + clat + ',' + zoom + '/' + imgWidth + 'x' + imgHeight + '.png?access_token=' + privateKey;
 
 	mapImg = loadImage(baseURL);
-	population = loadStrings('/population/simplemaps-worldcities-basic.csv');
+	population = loadJSON('json.json');
 }
 
 function setup() {
 
-	createCanvas(1024, 512);
+	createCanvas(600, 800);
 	translate(width/2, height/2);
 	imageMode(CENTER);
 	image(mapImg, 0, 0);
 
-	for(var i = 0; i < population.length; i++){
-		var data = population[i].split(/,/);
-		var lat = data[2];
-		var lon = data[3];
-		var pop = data[4];
+	var size = Object.keys(population).length;
 
-		pop = map(pop, 0, 30000000, 0, 30);
+	for(var i = 0; i < size; i++){
+		var data = population[i]
+		var lat = population[i]['latitudine'];
+		var lon = population[i]['longitudine'];
+		var pop = population[i]['Maschi']+population[i]['Femmine'];
+
+		pop = map(pop, 0, 500000, 0.1, 7);
 
 		var cx = mercX(clon);
 		var cy = mercY(clat);
@@ -50,8 +52,8 @@ function setup() {
 		var x  = mercX(lon) - cx;
 		var y  = mercY(lat) - cy;
 
-		fill(150, 20, 205, 100);
-		stroke(150, 20, 205);
+		fill(12, 20, 205, 100);
+		stroke(12, 20, 205);
 		ellipse(x, y, pop, pop); 
 	}
 
